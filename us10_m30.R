@@ -8,14 +8,6 @@ library(scales)
 rates <- read.csv("/Users/takayukitamura/Documents/R_Computing/us_rates/data/us_10y_30y.csv") %>% 
   select(-X)
 
-
-# data_07112024 <- data.frame("date" = c("2024-06-27", "2024-07-03", "2024-07-11",
-#                                        "2024-07-25"),
-#                "mortgage30" = c(6.86, 6.95, 6.89,
-#                                 6.78),
-#               "treasury10" = c(4.44, 4.36, 4.217,
-#                                ))
-
 updates <- tribble(~date, ~mortgage30, ~treasury10,
                    "2024-06-27", 6.86, 4.44,
                    "2024-07-03", 6.95, 4.36,
@@ -24,13 +16,21 @@ updates <- tribble(~date, ~mortgage30, ~treasury10,
                    "2024-07-25", 6.78, 4.28,
                    "2024-08-01", 6.73, 3.99,
                    "2024-08-08", 6.47, 3.98,
-                   "2024-08-15", 6.49, 3.92)
+                   "2024-08-15", 6.49, 3.92,
+                   "2024-08-22", 6.46, 3.86)
 
 rates <- rbind(rates, updates)
 rates$date <- as.Date(rates$date, format = "%Y-%m-%d")
 sapply(rates, class)
 head(rates)
 tail(rates)
+
+average_rates <- rates %>% 
+  filter(date >= "1971-01-01" & date <= "2024-12-31") %>% 
+  mutate(average_10y = mean(treasury10),
+         average_m30 = mean(mortgage30))
+
+
 
 # historical 30 year mortgage rates 
 
