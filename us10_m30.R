@@ -17,7 +17,8 @@ updates <- tribble(~date, ~mortgage30, ~treasury10,
                    "2024-08-01", 6.73, 3.99,
                    "2024-08-08", 6.47, 3.98,
                    "2024-08-15", 6.49, 3.92,
-                   "2024-08-22", 6.46, 3.86)
+                   "2024-08-22", 6.46, 3.86,
+                   "2024-08-29", 6.35, 3.87)
 
 rates <- rbind(rates, updates)
 rates$date <- as.Date(rates$date, format = "%Y-%m-%d")
