@@ -19,7 +19,11 @@ updates <- tribble(~date, ~mortgage30, ~treasury10,
                    "2024-08-15", 6.49, 3.92,
                    "2024-08-22", 6.46, 3.86,
                    "2024-08-29", 6.35, 3.87,
-                   "2024-09-05", 6.35, 3.73)
+                   "2024-09-05", 6.35, 3.73,
+                   "2024-09-12", 6.20, 3.68,
+                   "2024-09-19", 6.09, 3.72,
+                   "2024-09-26", 6.08, 3.80,
+                   "2024-10-03", 6.12, 3.85)
 
 rates <- rbind(rates, updates)
 rates$date <- as.Date(rates$date, format = "%Y-%m-%d")
@@ -38,7 +42,7 @@ average_rates <- rates %>%
 
 #### This is the final one! ####
 
-filtered_date <- as.Date("1971-01-01")
+filtered_date <- as.Date("2024-01-01")
 filtered_date2 <- as.Date("2024-12-31")
 
 rates <- rates %>% 
@@ -59,8 +63,10 @@ rates_longer <- rates %>%
 
 ggplot(rates_longer, aes(x = date, y = rates, color = class)) +
   geom_line(show.legend = TRUE) +
-  scale_y_continuous(limits = c(0, 20),
-                     breaks = seq(0, 20, 5),
+  geom_vline(xintercept = as.Date("2024-09-18"), linetype = "dashed", color = "red") +
+  annotate("text", x = as.Date("2024-09-18") - 15, y = 7, label = "Sep-18: Fed's rate-cut", vjust = -0.5) +
+  scale_y_continuous(limits = c(0, 7.5),
+                     breaks = seq(0, 7.5, 3),
                      labels = label_comma(accuracy = 0.1)) +
   labs(title = "10-Years Treasury Note Yield and 30-Years Mortgage Rates",
        x = NULL, y = "percentage",
@@ -76,6 +82,46 @@ ggplot(rates_longer, aes(x = date, y = rates, color = class)) +
   )
 
 ggsave("/Users/takayukitamura/Documents/R_Computing/us_rates/us10_m30/figures/10y_note_30y_mortgage.png", width = 6, height = 4)
+
+t_note_sep <- read_csv("/Users/takayukitamura/Documents/R_Computing/us_rates/data/t_note.csv") %>% 
+  select(date = Date, yield = Close) 
+
+# updates <- tribble(~date, ~yield,
+#                    "2024-09-27", 3.75)
+
+# updates$date <- as.Date(updates$date)
+
+# t_note_sep <- rbind(t_note_sep, updates)
+
+t_note_sep$date = as.Date(t_note_sep$date, format = "%m/%d/%y")
+
+# updates <- tribble(~date, ~yield,
+#                    "2024-09-23", 3.77)
+  
+# t_note_sep <- rbind(t_note_sep, updates)
+
+# t_note_sep <- rbind(updates, t_note_sep)
+
+t_note_sep %>% 
+  filter(date >= "2024-09-01") %>% 
+  ggplot(aes(x = date, y = yield)) +
+  geom_line() +
+  geom_vline(xintercept = as.Date("2024-09-18"), linetype = "dashed", color = "red") +
+  annotate("text", x = as.Date("2024-09-18"), y = 3.825, label = "Sep-18: Fed's rate-cut", vjust = -0.5)+
+  labs(title = "10-Year Treasury Note Yield up desptie the Fed's bigger rate-cut",
+       x = NULL,
+       y = "10-year treasury. bond yield",
+       caption = "Source: WSJ")+
+  theme(
+    plot.title.position = "plot"
+  )
+
+p <- t_note_sep %>% 
+  ggplot(aes(x = date, y = yield)) +
+  geom_line() +
+  geom_vline(xintercept = as.Date("2024-09-18"))
+
+p + geom_vline(xintercept = 2024-09-18)
 
 rates %>% 
   ggplot(aes(x=date, y=mortgage30)) +
@@ -308,5 +354,4 @@ rates %>%
   ) 
 
 ggsave("/Users/takayukitamura/Documents/R_Computing/us_rates/us10_m30/figures/implied_30_year_mortgage_2.png", height = 5, width = 5)
-
 
